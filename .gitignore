@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+.venv/
+/.triage-test-*.html
+/.triage-test-*/
+*.log
+!samples/sshd.log
+reports/
+triage.html
+triage.json

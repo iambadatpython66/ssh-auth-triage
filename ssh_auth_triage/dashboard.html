@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'">
+  <title>SSH Auth Triage</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: Inter, system-ui, sans-serif;
+      color: #edf4f1;
+      background: #101815;
+      --surface: #1a2521;
+      --border: #334740;
+      --muted: #adc2b8;
+      --accent: #a8f3c9;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    main { width: min(100% - 2rem, 60rem); margin: 0 auto; padding: 3.5rem 0; }
+    header { padding-bottom: 1.8rem; border-bottom: 1px solid var(--border); }
+    h1 { margin: 0 0 .5rem; font-size: clamp(2.4rem, 7vw, 4rem); letter-spacing: -.055em; }
+    h2 { margin: 0 0 .8rem; font-size: 1.45rem; }
+    h3 { margin: 0; font-size: 1.05rem; }
+    p { line-height: 1.55; }
+    time, dd { font-family: ui-monospace, Consolas, monospace; }
+    .log-window { margin: 0; color: var(--muted); overflow-wrap: anywhere; }
+    .stats, .details { display: grid; gap: .75rem; }
+    .stats { grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr)); margin: 1.25rem 0 .5rem; }
+    .stats div, .finding, .empty { border: 1px solid var(--border); background: var(--surface); }
+    .stats div { border-radius: .7rem; padding: .9rem 1rem; }
+    dt { color: var(--muted); font-size: .83rem; }
+    dd { margin: 0; overflow-wrap: anywhere; }
+    .stats dd { margin-top: .24rem; font-size: 1.6rem; font-weight: 650; color: var(--accent); }
+    .counts { margin: 0; color: var(--muted); font-size: .875rem; }
+    section { margin-top: 2rem; }
+    .finding, .empty { margin: .75rem 0; padding: 1rem; border-radius: .7rem; }
+    .finding-heading { display: flex; flex-wrap: wrap; gap: .65rem; align-items: center; }
+    .finding-heading time { margin-left: auto; color: var(--muted); font-size: .83rem; }
+    .severity { min-width: 4.3rem; padding: .22rem .5rem; border-radius: .3rem; text-align: center; font-size: .78rem; font-weight: 700; }
+    .high { color: #ffc9c0; background: #59322d; }
+    .medium { color: #ffdf9b; background: #4c3c20; }
+    .details { grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); margin: 1rem 0; }
+    .details dd { margin-top: .25rem; font-size: .875rem; }
+    details { border-top: 1px solid var(--border); padding-top: .75rem; }
+    details summary { width: fit-content; color: var(--accent); cursor: pointer; }
+    details p { margin: .6rem 0 0; color: var(--muted); }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    .rules p { color: var(--muted); margin: .4rem 0; }
+    @media (max-width: 36rem) {
+      main { padding: 2rem 0; }
+      .finding-heading time { width: 100%; margin: 0; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>SSH Auth Triage</h1>
+      <p class="log-window">$log_window</p>
+    </header>
+    <dl class="stats" aria-label="Log summary">
+      <div><dt>Findings</dt><dd>$finding_count</dd></div>
+      <div><dt>Auth events</dt><dd>$event_count</dd></div>
+      <div><dt>Source IPs</dt><dd>$source_count</dd></div>
+      <div><dt>Lines read</dt><dd>$lines_read</dd></div>
+    </dl>
+    <p class="counts">$ignored_lines ignored &middot; $malformed_lines malformed</p>
+    <section aria-labelledby="findings-heading">
+      <h2 id="findings-heading">Findings timeline</h2>
+      $findings
+    </section>
+    <section class="rules" aria-labelledby="rules-heading">
+      <h2 id="rules-heading">Detection settings</h2>
+      <p>Rolling window: $window_seconds seconds</p>
+      <p>Repeated failures: $min_failures failures from one IP on one host</p>
+      <p>Success after failures: $success_min_failures failures for the same account, IP and host</p>
+    </section>
+  </main>
+</body>
+</html>
